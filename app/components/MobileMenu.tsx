@@ -1,27 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useEffect, useState } from "react";
+
 
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
 };
 
-const menuVariants = {
-  hidden: { x: "-100%" },
+const menuVariants: Variants = {
+  hidden: {
+    x: "-100%",
+  },
   visible: {
     x: 0,
     transition: {
-      duration: 0.35,
-      ease: "easeOut",
+      duration: 0.4,
+      ease: [0.25, 0.1, 0.25, 1],
       staggerChildren: 0.1,
     },
   },
   exit: {
     x: "-100%",
-    transition: { duration: 0.3 },
+    transition: {
+      duration: 0.3,
+    },
   },
 };
 
