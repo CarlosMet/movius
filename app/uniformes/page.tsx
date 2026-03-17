@@ -6,15 +6,21 @@ import SortDropdown from "../components/SortDropdown";
 import ProductGrid from "../components/ProductGrid";
 import FilterDrawer from "../components/FilterDrawer";
 
+type Filters = {
+  type: string[];
+  gender: string[];
+  sort: string;
+};
+
 export default function UniformesPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [filters, setFilters] = useState({
-    type: [],
-    gender: [],
-    sort: "",
-  });
+  const [filters, setFilters] = useState<Filters>({
+  type: [],
+  gender: [],
+  sort: "",
+});
 
   const [tempFilters, setTempFilters] = useState(filters);
   const [openFilters, setOpenFilters] = useState(false);
