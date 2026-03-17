@@ -1,12 +1,15 @@
-import { getProductById } from "@/lib/product";
-import { NextResponse } from "next/server";
-
+import { NextResponse, NextRequest } from "next/server";
+import products from "../../../../data/productos.json";
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
-  const product = getProductById(Number(params.id));
+  const { id } = await context.params;
+
+  const product = products.find(
+    (p) => p.id === Number(id)
+  );
 
   if (!product) {
     return NextResponse.json(
