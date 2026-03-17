@@ -1,11 +1,19 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+type Subcategory = {
+  name: string;
+  types: string[];
+};
 
-const data = [
+type Category = {
+  name: string;
+  subcategories: Subcategory[];
+};
+
+const categories: Category[] = [
   {
-    name: "Institucionales",
-    sub: [
+    name: "Institucional",
+    subcategories: [
       {
         name: "Hombre",
         types: ["Camiseta", "Sudadera", "Chaqueta"],
@@ -17,12 +25,30 @@ const data = [
     ],
   },
   {
-    name: "Áreas de la salud",
-    sub: [{ name: "Hombre" }, { name: "Mujer" }],
+    name: "Salud",
+    subcategories: [
+      {
+        name: "Hombre",
+        types: [],
+      },
+      {
+        name: "Mujer",
+        types: [],
+      },
+    ],
   },
   {
-    name: "Generales",
-    sub: [{ name: "Hombre" }, { name: "Mujer" }],
+    name: "General",
+    subcategories: [
+      {
+        name: "Hombre",
+        types: [],
+      },
+      {
+        name: "Mujer",
+        types: [],
+      },
+    ],
   },
 ];
 
@@ -34,91 +60,94 @@ export default function FilterDrawer({
   applyFilters,
   clearFilters,
 }: any) {
-  const toggle = (group: string, value: string) => {
-    const current = tempFilters[group];
-    const exists = current.includes(value);
+  if (!open) return null;
+
+  const toggleType = (type: string) => {
+    const exists = tempFilters.type.includes(type);
 
     const updated = exists
-      ? current.filter((v: string) => v !== value)
-      : [...current, value];
+      ? tempFilters.type.filter((t: string) => t !== type)
+      : [...tempFilters.type, type];
 
-    setTempFilters({ ...tempFilters, [group]: updated });
+    setTempFilters({ ...tempFilters, type: updated });
+  };
+
+  const toggleGender = (gender: string) => {
+    const exists = tempFilters.gender.includes(gender);
+
+    const updated = exists
+      ? tempFilters.gender.filter((g: string) => g !== gender)
+      : [...tempFilters.gender, gender];
+
+    setTempFilters({ ...tempFilters, gender: updated });
   };
 
   return (
-    <AnimatePresence>
-      {open && (
-        <>
-          {/* OVERLAY */}
-          <motion.div
-            className="fixed inset-0 bg-black/40 z-40"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
+    <div className="fixed inset-0 bg-black/40 z-50">
+      <div className="absolute right-0 top-0 w-full max-w-md h-full bg-white p-6 overflow-y-auto">
+        
+        {/* HEADER */}
+        <div className="flex justify-between mb-6">
+          <h2 className="text-lg font-semibold">Filtros</h2>
+          <button onClick={onClose}>✕</button>
+        </div>
 
-          {/* PANEL */}
-          <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ duration: 0.4 }}
-            className="fixed top-0 right-0 w-full md:w-[420px] h-full bg-white z-50 flex flex-col"
-          >
-            {/* HEADER */}
-            <div className="p-6 border-b flex justify-between">
-              <h2 className="text-lg font-medium">Filtros</h2>
-              <button onClick={onClose}>✕</button>
-            </div>
+        {/* CATEGORÍAS */}
+        {categories.map((cat) => (
+          <div key={cat.name} className="mb-6">
+            <h3 className="font-medium mb-2">{cat.name}</h3>
 
-            {/* CONTENT */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              {data.map((cat) => (
-                <div key={cat.name}>
-                  <h3 className="font-medium mb-2">{cat.name}</h3>
+            {cat.subcategories.map((sub) => (
+              <div key={sub.name} className="mb-3">
+                
+                {/* GÉNERO */}
+                <label className="flex gap-2 text-sm cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={tempFilters.gender.includes(sub.name)}
+                    onChange={() => toggleGender(sub.name)}
+                  />
+                  {sub.name}
+                </label>
 
-                  {cat.sub.map((sub) => (
-                    <div key={sub.name} className="mb-3">
-                      <p className="text-sm text-gray-500">{sub.name}</p>
-
-                      {sub.types?.map((type) => (
-                        <label
-                          key={type}
-                          className="flex gap-2 text-sm cursor-pointer"
-                        >
-                          <input
-                            type="checkbox"
-                            onChange={() => toggle("type", type)}
-                          />
-                          {type}
-                        </label>
-                      ))}
-                    </div>
+                {/* TIPOS */}
+                <div className="ml-5 mt-1 space-y-1">
+                  {(sub.types ?? []).map((type) => (
+                    <label
+                      key={type}
+                      className="flex gap-2 text-sm cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={tempFilters.type.includes(type)}
+                        onChange={() => toggleType(type)}
+                      />
+                      {type}
+                    </label>
                   ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
+        ))}
 
-            {/* FOOTER */}
-            <div className="p-6 border-t space-y-3">
-              <button
-                onClick={applyFilters}
-                className="w-full bg-black text-white py-3 rounded-full"
-              >
-                Aplicar filtros
-              </button>
+        {/* BOTONES */}
+        <div className="mt-8 flex gap-3">
+          <button
+            onClick={clearFilters}
+            className="w-1/2 border py-2 rounded-lg text-sm"
+          >
+            Borrar todo
+          </button>
 
-              <button
-                onClick={clearFilters}
-                className="w-full text-sm underline"
-              >
-                Limpiar todo
-              </button>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+          <button
+            onClick={applyFilters}
+            className="w-1/2 bg-black text-white py-2 rounded-lg text-sm"
+          >
+            Aplicar
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
