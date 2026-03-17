@@ -10,7 +10,7 @@ const slides = [
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=2070&auto=format&fit=crop",
+      "https://i.postimg.cc/wv7GZ3Mt/uniformes.png",
     title: "Uniformes Escolares",
     subtitle: "Comodidad y calidad para todo el año",
     link: "/uniformes",
@@ -19,7 +19,7 @@ const slides = [
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?q=80&w=2070&auto=format&fit=crop",
+      "https://i.postimg.cc/tg1Jgtmg/Chat-GPT-Image-Mar-17-2026-02-33-48-AM.png",
     title: "Colección Hombre",
     subtitle: "Ropa casual y deportiva",
     link: "/hombre",

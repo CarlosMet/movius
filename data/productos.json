@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "name": "Camiseta Hombre",
+    "slug": "camiseta-hombre",
+    "price": 30000,
+    "type": "Camiseta",
+    "gender": "Hombre",
+    "image": "https://picsum.photos/400/500?1",
+    "description": "Camiseta cómoda y transpirable",
+    "category": "Institucional"
+  },
+  {
+    "id": 2,
+    "name": "Chaqueta Mujer",
+    "slug": "chaqueta-mujer",
+    "price": 80000,
+    "type": "Chaqueta",
+    "gender": "Mujer",
+    "image": "https://picsum.photos/400/500?2",
+    "description": "Chaqueta ideal para clima frío",
+    "category": "General"
+  }
+]
