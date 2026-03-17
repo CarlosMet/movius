@@ -6,7 +6,6 @@ import SortDropdown from "../components/SortDropdown";
 import ProductGrid from "../components/ProductGrid";
 import FilterDrawer from "../components/FilterDrawer";
 
-
 export default function UniformesPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -51,25 +50,42 @@ export default function UniformesPage() {
   return (
     <div className="bg-white">
       
-      {/* HERO */}
-      <section className="w-full h-[420px] relative">
+      {/* HERO MEJORADO */}
+      <section className="w-full h-[420px] md:h-[500px] relative overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1520975922324-5a12f61c1c7f"
+          src="https://images.unsplash.com/photo-1520975661595-6453be3f7070"
           className="w-full h-full object-cover"
         />
+
+        {/* overlay tipo Zara */}
+        <div className="absolute inset-0 bg-black/10" />
+
+        {/* texto opcional */}
+        <div className="absolute bottom-6 left-6 text-white">
+          <h1 className="text-2xl md:text-3xl font-semibold">
+            Uniformes
+          </h1>
+          <p className="text-sm opacity-80">
+            Colección institucional y profesional
+          </p>
+        </div>
       </section>
 
-      {/* TOP BAR */}
-      <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between">
+      {/* TOP BAR MEJORADO */}
+      <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center border-b">
+        
+        {/* FILTRO */}
         <button
           onClick={() => {
             setTempFilters(filters);
             setOpenFilters(true);
           }}
+          className="text-sm tracking-wide hover:opacity-60 transition"
         >
           FILTRAR Y ORDENAR
         </button>
 
+        {/* ORDEN */}
         <SortDropdown
           filters={filters}
           setFilters={(f: any) => {
@@ -80,7 +96,7 @@ export default function UniformesPage() {
       </div>
 
       {/* GRID */}
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <ProductGrid filters={filters} />
       </div>
 
@@ -92,7 +108,7 @@ export default function UniformesPage() {
         setTempFilters={setTempFilters}
         applyFilters={() => {
           setFilters(tempFilters);
-          updateURL(tempFilters); // 🔥 CLAVE
+          updateURL(tempFilters);
           setOpenFilters(false);
         }}
         clearFilters={() => {

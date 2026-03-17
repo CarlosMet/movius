@@ -1,24 +1,62 @@
 [
   {
     "id": 1,
-    "name": "Camiseta Hombre",
-    "slug": "camiseta-hombre",
+    "filtro": "hombre",
+    "name": "Buso Hombre",
+    "slug": "buso-hombre",
     "price": 30000,
+    "originalPrice": 40000,
+    "discountPrice": 30000,
+    "unitsSold": 120,
     "type": "Camiseta",
     "gender": "Hombre",
-    "image": "https://picsum.photos/400/500?1",
-    "description": "Camiseta cómoda y transpirable",
-    "category": "Institucional"
+    "category": "Institucional",
+    "description": "Camiseta cómoda y transpirable para uso diario.",
+    "images": [
+      "https://i.postimg.cc/NMYgX58f/DSC07947.jpg",
+      "https://i.postimg.cc/d1vqCLR0/DSC07951.jpg",
+      "https://i.postimg.cc/Ssqy9JLQ/DSC07952.jpg",
+      "https://i.postimg.cc/gcsvnhyJ/DSC07957.jpg"
+    ]
   },
   {
     "id": 2,
+    "filtro":"hombre",
     "name": "Chaqueta Mujer",
     "slug": "chaqueta-mujer",
     "price": 80000,
+    "originalPrice": 100000,
+    "discountPrice": 100000,
+    "unitsSold": 80,
     "type": "Chaqueta",
     "gender": "Mujer",
-    "image": "https://picsum.photos/400/500?2",
-    "description": "Chaqueta ideal para clima frío",
-    "category": "General"
+    "category": "General",
+    "description": "Chaqueta ideal para clima frío con diseño moderno.",
+    "images": [
+      "https://i.postimg.cc/rmBFpQnk/DSC07937.jpg",
+      "https://i.postimg.cc/rmBFpQnX/DSC07939.jpg",
+      "https://i.postimg.cc/Kz6vYJ9W/DSC07944.jpg",
+      "https://picsum.photos/600/700?8"
+    ]
+  },
+  {
+    "id": 3,
+    "filtro":"hombre",
+    "name": "Camiseta Negra Hombre",
+    "slug": "camiseta-negra-hombre",
+    "price": 80000,
+    "originalPrice": 100000,
+    "discountPrice": 100000,
+    "unitsSold": 80,
+    "type": "Camiseta",
+    "gender": "Hombre",
+    "category": "Casual",
+    "description": "Camiseta negra cómoda y transpirable para uso diario.",
+    "images": [
+      "https://i.postimg.cc/g0gZrHp1/Gemini_Generated_Image_lax3tllax3tllax3.png",
+      "https://i.postimg.cc/s2Th14yF/Gemini_Generated_Image_g44gyig44gyig44g.png",
+      "https://i.postimg.cc/pdsFyJvg/Gemini-Generated-Image-mzrgugmzrgugmzrg.png",
+      "https://picsum.photos/600/700?8"
+    ]
   }
 ]
