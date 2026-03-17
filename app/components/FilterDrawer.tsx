@@ -2,7 +2,7 @@
 
 type Subcategory = {
   name: string;
-  types: string[];
+  type: string[];
 };
 
 type Category = {
@@ -16,11 +16,11 @@ const categories: Category[] = [
     subcategories: [
       {
         name: "Hombre",
-        types: ["Camiseta", "Sudadera", "Chaqueta"],
+        type: ["Camiseta", "Sudadera", "Chaqueta"],
       },
       {
         name: "Mujer",
-        types: ["Camiseta", "Sudadera", "Chaqueta"],
+        type: ["Camiseta", "Sudadera", "Chaqueta"],
       },
     ],
   },
@@ -29,11 +29,11 @@ const categories: Category[] = [
     subcategories: [
       {
         name: "Hombre",
-        types: [],
+        type: [],
       },
       {
         name: "Mujer",
-        types: [],
+        type: [],
       },
     ],
   },
@@ -42,11 +42,11 @@ const categories: Category[] = [
     subcategories: [
       {
         name: "Hombre",
-        types: [],
+        type: [],
       },
       {
         name: "Mujer",
-        types: [],
+        type: [],
       },
     ],
   },
@@ -112,7 +112,7 @@ export default function FilterDrawer({
 
                 {/* TIPOS */}
                 <div className="ml-5 mt-1 space-y-1">
-                  {(sub.types ?? []).map((type) => (
+                  {(sub.type ?? []).map((type) => (
                     <label
                       key={type}
                       className="flex gap-2 text-sm cursor-pointer"

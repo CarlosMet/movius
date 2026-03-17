@@ -77,10 +77,10 @@ export default function ProductGrid({ filters }: any) {
                   </p>
 
                  {p.originalPrice > p.discountPrice && (
-  <p className="text-xs text-gray-400 line-through">
-    ${p.originalPrice.toLocaleString()}
-  </p>
-)}
+                    <p className="text-xs text-gray-400 line-through">
+                        ${p.originalPrice.toLocaleString()}
+                    </p>
+                        )}
                 </div>
               </div>
             </div>
