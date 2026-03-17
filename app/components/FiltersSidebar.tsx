@@ -3,7 +3,19 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
-const data = [
+// ✅ TIPOS EXPLÍCITOS
+type SubItem = {
+  name: string;
+  types: string[]; // siempre existe
+};
+
+type Category = {
+  name: string;
+  sub: SubItem[];
+};
+
+// ✅ DATOS NORMALIZADOS (CLAVE 🔥)
+const data: Category[] = [
   {
     name: "Institucionales",
     sub: [
@@ -19,11 +31,17 @@ const data = [
   },
   {
     name: "Áreas de la salud",
-    sub: [{ name: "Hombre" }, { name: "Mujer" }],
+    sub: [
+      { name: "Hombre", types: [] }, // ✅ FIX
+      { name: "Mujer", types: [] },  // ✅ FIX
+    ],
   },
   {
     name: "Generales",
-    sub: [{ name: "Hombre" }, { name: "Mujer" }],
+    sub: [
+      { name: "Hombre", types: [] }, // ✅ FIX
+      { name: "Mujer", types: [] },  // ✅ FIX
+    ],
   },
 ];
 
@@ -59,21 +77,24 @@ export default function FiltersSidebar({ filters, setFilters }: any) {
               >
                 {cat.sub.map((sub) => (
                   <div key={sub.name} className="py-2">
-                    <p className="text-sm text-gray-600">{sub.name}</p>
+                    
+                    <p className="text-sm text-gray-600">
+                      {sub.name}
+                    </p>
 
-                    {sub.types && (
-                      <div className="ml-3 mt-1 space-y-1">
-                        {sub.types.map((type) => (
-                          <label
-                            key={type}
-                            className="flex items-center gap-2 text-sm cursor-pointer"
-                          >
-                            <input type="checkbox" />
-                            {type}
-                          </label>
-                        ))}
-                      </div>
-                    )}
+                    {/* ✅ YA NO NECESITA VALIDACIÓN */}
+                    <div className="ml-3 mt-1 space-y-1">
+                      {sub.types.map((type) => (
+                        <label
+                          key={type}
+                          className="flex items-center gap-2 text-sm cursor-pointer"
+                        >
+                          <input type="checkbox" />
+                          {type}
+                        </label>
+                      ))}
+                    </div>
+
                   </div>
                 ))}
               </motion.div>
