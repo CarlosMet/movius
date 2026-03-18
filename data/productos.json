@@ -28,8 +28,8 @@
     "originalPrice": 100000,
     "discountPrice": 100000,
     "unitsSold": 80,
-    "type": "Chaqueta",
-    "gender": "Mujer",
+    "type": "Camiseta",
+    "gender": "Hombre",
     "category": "General",
     "description": "Chaqueta ideal para clima frío con diseño moderno.",
     "images": [

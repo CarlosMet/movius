@@ -2,7 +2,7 @@ import Link from "next/link";
 import products from "../../data/productos.json";
 
 export default function ProductGrid({ filters }: any) {
-  let filtered = [...products];
+  let filtered = [...products.filter(product => product.filtro === "uniformes")];
 
   // FILTROS
   if (filters.type.length) {
