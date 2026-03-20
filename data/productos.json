@@ -2,16 +2,16 @@
   {
     "id": 1,
     "filtro": "hombre",
-    "name": "Buso Hombre",
-    "slug": "buso-hombre",
+    "name": "Buso Negro Hombre",
+    "slug": "buso-negro-hombre",
     "price": 30000,
     "originalPrice": 40000,
     "discountPrice": 30000,
     "unitsSold": 120,
-    "type": "Camiseta",
+    "type": "Buso",
     "gender": "Hombre",
     "category": "Institucional",
-    "description": "Camiseta cómoda y transpirable para uso diario.",
+    "description": "Buso cómodo y transpirable para uso diario.",
     "images": [
       "https://i.postimg.cc/NMYgX58f/DSC07947.jpg",
       "https://i.postimg.cc/d1vqCLR0/DSC07951.jpg",
@@ -39,22 +39,22 @@
   },
   {
     "id": 2,
-    "filtro":"Mujer",
-    "name": "Chaqueta Mujer",
-    "slug": "chaqueta-mujer",
+    "filtro":"Hombre",
+    "name": "Camibuso Azul Hombre",
+    "slug": "camibuso-azul-hombre",
     "price": 80000,
     "originalPrice": 100000,
     "discountPrice": 100000,
     "unitsSold": 80,
-    "type": "Camiseta",
+    "type": "Buso",
     "gender": "Hombre",
     "category": "General",
-    "description": "Chaqueta ideal para clima frío con diseño moderno.",
+    "description": "Buso ideal para clima frío con diseño moderno y en algodón.",
     "images": [
       "https://i.postimg.cc/rmBFpQnk/DSC07937.jpg",
       "https://i.postimg.cc/rmBFpQnX/DSC07939.jpg",
-      "https://i.postimg.cc/Kz6vYJ9W/DSC07944.jpg",
-      "https://picsum.photos/600/700?8"
+      "https://i.postimg.cc/Kz6vYJ9W/DSC07944.jpg"
+      
     ],
     "variants": [
         {
@@ -77,22 +77,98 @@
   },
   {
     "id": 3,
-    "filtro":"hombre",
-    "name": "Camiseta Negra Hombre",
-    "slug": "camiseta-negra-hombre",
+    "filtro":"Hombre",
+    "name": "Camiseta Negra Básica Hombre",
+    "slug": "camiseta-negra-basica-hombre",
     "price": 80000,
     "originalPrice": 100000,
     "discountPrice": 100000,
     "unitsSold": 80,
-    "type": "Pantaloneta",
+    "type": "Camiseta",
     "gender": "Hombre",
-    "category": "Casual",
-    "description": "Camiseta negra cómoda y transpirable para uso diario.",
+    "category": "General",
+    "description": "Camiseta ideal para clima frío con diseño moderno.",
     "images": [
-      "https://i.postimg.cc/g0gZrHp1/Gemini_Generated_Image_lax3tllax3tllax3.png",
-      "https://i.postimg.cc/s2Th14yF/Gemini_Generated_Image_g44gyig44gyig44g.png",
-      "https://i.postimg.cc/pdsFyJvg/Gemini-Generated-Image-mzrgugmzrgugmzrg.png",
-      "https://picsum.photos/600/700?8"
+      "https://i.postimg.cc/LshhynpC/DSC07910.jpg",
+      "https://i.postimg.cc/yNWWfkHr/DSC07917.jpg",
+      "https://i.postimg.cc/fbkkHJNr/DSC07915.jpg",
+      "https://i.postimg.cc/QMVV6H3Y/DSC07959.jpg"
+    ],
+    "variants": [
+        {
+          "size": "30",
+          "stock": 7
+        },
+        {
+          "size": "32",
+          "stock": 6
+        },
+        {
+          "size": "34",
+          "stock": 4
+        },
+        {
+          "size": "36",
+          "stock": 2
+        }
+      ]
+  },
+  {
+    "id": 4,
+    "filtro":"Hombre",
+    "name": "Buso Azul Hombre",
+    "slug": "buso-azul-hombre",
+    "price": 80000,
+    "originalPrice": 100000,
+    "discountPrice": 100000,
+    "unitsSold": 80,
+    "type": "Buso",
+    "gender": "Hombre",
+    "category": "General",
+    "description": "Chaqueta ideal para clima frío con diseño moderno.",
+    "images": [
+      "https://i.postimg.cc/CKZkRvz8/DSC07924.jpg",
+      "https://i.postimg.cc/d07rhWLr/DSC07927.jpg",
+      "https://i.postimg.cc/7LC05BfT/DSC07929.jpg",
+      "https://i.postimg.cc/QMVV6H3Y/DSC07959.jpg"
+    ],
+    "variants": [
+        {
+          "size": "30",
+          "stock": 7
+        },
+        {
+          "size": "32",
+          "stock": 6
+        },
+        {
+          "size": "34",
+          "stock": 4
+        },
+        {
+          "size": "36",
+          "stock": 2
+        }
+      ]
+  }, 
+  {
+    "id": 6,
+    "filtro":"Hombre",
+    "name": "Buso Con Balaclava Azul Para Moto Hombre",
+    "slug": "buso-azul-balaclava-hombre",
+    "price": 80000,
+    "originalPrice": 100000,
+    "discountPrice": 85000,
+    "unitsSold": 80,
+    "type": "Buso",
+    "gender": "Hombre",
+    "category": "General",
+    "description": "Chaqueta ideal para clima frío con diseño moderno.",
+    "images": [
+      "https://i.postimg.cc/mr2RjqQd/DSC07998.jpg",
+      "https://i.postimg.cc/cJ4ZhjQB/DSC07990.jpg",
+      "https://i.postimg.cc/Jh4mxgbc/DSC08001.jpg",
+      "https://i.postimg.cc/q7M0wY8L/DSC07992.jpg"
     ],
     "variants": [
         {
@@ -113,4 +189,5 @@
         }
       ]
   }
+  
 ]
