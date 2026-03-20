@@ -3,6 +3,8 @@ import HeroSlider from "./components/HeroSlider";
 import { Poppins } from "next/font/google";
 import { Montserrat } from "next/font/google";
 import PremiumCarousel from "./components/seccioncalidad/PremiumCarousel";
+import Personalizados from "./components/personalizados/Personalizados";
+import PersonalizadosInfo from "./components/personalizados/PersonalizadosInfo";
 
 const montserratFont = Montserrat({
   subsets: ["latin"],
@@ -16,6 +18,8 @@ export default function Home() {
     <div className={`${montserratFont.className} font-sans`}>
       <HeroSlider />
       <PremiumCarousel />
+      <PersonalizadosInfo />
+      <Personalizados />
       <button className="btn-primary" > Agregar al carrito </button>
       <button className="btn">boton normal</button>     
       <button className="btn-outline">boton contorno</button>   
