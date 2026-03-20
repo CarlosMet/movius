@@ -6,10 +6,33 @@
 
 html,
 body {
-  overflow-x: hidden;
+  overflow-x: hidden !important;
 }
 
 @layer components {
+  .black-btn{
+    @apply relative flex items-center justify-center gap-2 bg-black text-white text-xs font-semibold tracking-[0.15em] uppercase w-full py-3 overflow-hidden transition-colors duration-500 cursor-pointer;
+  }
+  
+  .btn-cart {
+  @apply relative flex items-center justify-center gap-2 
+         border border-black text-black 
+         text-xs font-semibold tracking-[0.15em] uppercase 
+         w-full py-3 overflow-hidden
+         transition-colors duration-500 cursor-pointer;
+}
+
+.btn-cart span.fill {
+  @apply absolute inset-0 bg-black 
+         translate-y-full group-hover:translate-y-0 
+         transition-transform duration-500 ease-out;
+}
+
+.btn-cart span.label {
+  @apply relative z-10 
+         group-hover:text-white 
+         transition-colors duration-500;
+}
 
   .btn {
     @apply px-6 py-3 rounded-lg font-semibold transition-all duration-300;

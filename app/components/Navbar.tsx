@@ -1,15 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import DropdownMenu from "./DropdownMenu";
 import MobileMenu from "./MobileMenu";
 import CartDrawer from "./CartDrawer";
 import { Search, ShoppingCart } from "lucide-react";
+import { getCart } from "@/lib/cart";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+
+  const updateCount = () => {
+    const items = getCart();
+    const count = items.reduce((acc, item) => acc + (item.quantity ?? 0), 0);
+    setCartCount(count);
+  };
+
+  useEffect(() => {
+    updateCount();
+    window.addEventListener("cartUpdated", updateCount);
+    return () => window.removeEventListener("cartUpdated", updateCount);
+  }, []);
 
   return (
     <>
@@ -58,10 +72,11 @@ export default function Navbar() {
             className="relative cursor-pointer"
           >
             <ShoppingCart size={20} />
-            {/* Badge */}
-            <span className="absolute -top-2 -right-2 bg-black text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-              3
-            </span>
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center leading-none">
+                {cartCount > 99 ? "99+" : cartCount}
+              </span>
+            )}
           </button>
         </div>
 

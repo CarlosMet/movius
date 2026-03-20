@@ -1,62 +1,115 @@
 "use client";
 
-export default function FilterDrawer({
-  open,
-  onClose,
-  filters,
-  setFilters,
-  sort,
-  setSort,
-}: any) {
-  if (!open) return null;
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Check } from "lucide-react";
+import { Poppins } from "next/font/google";
 
-  const types = ["Camiseta", "Pantalón", "Buso", "Pantaloneta"];
+const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600"] });
 
+const SORT_OPTIONS = [
+  { label: "Más vendidos", value: "sold" },
+  { label: "Más recientes", value: "recent" },
+  { label: "Menor precio", value: "price_asc" },
+  { label: "Mayor precio", value: "price_desc" },
+];
+
+interface Props {
+  open: boolean;
+  onClose: () => void;
+  sort: string;
+  setSort: (sort: string) => void;
+  // filters y setFilters se mantienen por compatibilidad pero ya no se usan aquí
+  filters: string[];
+  setFilters: (filters: string[]) => void;
+}
+
+export default function FilterDrawer({ open, onClose, sort, setSort }: Props) {
   return (
-    <div className="fixed inset-0 bg-black/30 z-50">
-      <div className="absolute left-0 top-0 h-full w-72 bg-white p-4">
+    <AnimatePresence>
+      {open && (
+        <>
+          {/* BACKDROP */}
+          <motion.div
+            className="fixed inset-0 bg-black/40 z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
 
-        <h2 className="font-semibold mb-4">Filtros</h2>
+          {/* DRAWER */}
+          <motion.div
+            className={`fixed top-0 left-0 h-full w-full max-w-[320px] bg-white z-50 flex flex-col ${poppins.className}`}
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
+          >
+            {/* HEADER */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+              <div>
+                <h2 className="text-base font-semibold text-gray-900 tracking-tight">
+                  Ordenar
+                </h2>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  Selecciona un criterio
+                </p>
+              </div>
+              <button
+                onClick={onClose}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
 
-        {types.map((type) => (
-          <label key={type} className="flex gap-2 mb-2 text-sm">
-            <input
-              type="checkbox"
-              checked={filters.includes(type)}
-              onChange={() =>
-                setFilters((prev: string[]) =>
-                  prev.includes(type)
-                    ? prev.filter((t) => t !== type)
-                    : [...prev, type]
-                )
-              }
-            />
-            {type}
-          </label>
-        ))}
+            {/* OPCIONES */}
+            <div className="flex-1 px-6 py-6 space-y-2">
+              {SORT_OPTIONS.map((opt) => {
+                const isSelected = sort === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={() => setSort(opt.value)}
+                    className={`w-full flex items-center justify-between px-4 py-3.5 text-sm font-medium border transition-all duration-150 ${
+                      isSelected
+                        ? "border-black bg-black text-white"
+                        : "border-gray-100 text-gray-700 hover:border-gray-300"
+                    }`}
+                  >
+                    {opt.label}
+                    {isSelected && <Check size={14} />}
+                  </button>
+                );
+              })}
 
-        <h2 className="font-semibold mt-4 mb-2">Ordenar</h2>
+              {/* Limpiar orden */}
+              {sort && (
+                <button
+                  onClick={() => setSort("")}
+                  className="w-full text-xs text-gray-400 hover:text-gray-900 transition-colors text-center underline underline-offset-2 pt-2"
+                >
+                  Quitar orden
+                </button>
+              )}
+            </div>
 
-        {[
-          { label: "Menor a mayor", value: "price_asc" },
-          { label: "Mayor a menor", value: "price_desc" },
-          { label: "Más vendidos", value: "sold" },
-          { label: "Más recientes", value: "recent" },
-        ].map((opt) => (
-          <label key={opt.value} className="flex gap-2 text-sm mb-2">
-            <input
-              type="radio"
-              checked={sort === opt.value}
-              onChange={() => setSort(opt.value)}
-            />
-            {opt.label}
-          </label>
-        ))}
+            {/* FOOTER */}
+            <div className="px-6 py-6 border-t border-gray-100">
+              <button
+                onClick={onClose}
+                className="relative w-full flex items-center justify-center border border-black text-black text-xs font-semibold tracking-[0.15em] uppercase py-4 overflow-hidden group transition-colors duration-300"
+              >
+                <span className="absolute inset-0 bg-black translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                <span className="relative z-10 group-hover:text-white transition-colors duration-300">
+                  Aplicar
+                </span>
+              </button>
+            </div>
 
-        <button onClick={onClose} className="btn-primary w-full mt-4">
-          Aplicar
-        </button>
-      </div>
-    </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }

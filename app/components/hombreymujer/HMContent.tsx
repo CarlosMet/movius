@@ -2,10 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { getProducts } from "@/lib/product";
-import Link from "next/link";
-
+import ProductCard from "./ProductCard";
 import ProductSkeleton from "./ProductSkeleton";
 import FilterDrawer from "./FilterDrawer";
+import { SlidersHorizontal, X } from "lucide-react";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
+
+const BANNER_BY_GENDER: Record<string, string> = {
+  hombre: "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=1400&auto=format&fit=crop",
+  mujer: "https://images.unsplash.com/photo-1520975661595-6453be3f7070?w=1400&auto=format&fit=crop",
+};
 
 export default function HMContent({ gender }: { gender: string }) {
   const [filters, setFilters] = useState<string[]>([]);
@@ -20,157 +28,190 @@ export default function HMContent({ gender }: { gender: string }) {
       p.filtro !== "uniformes"
   );
 
-  // FILTROS
+  const allTypes = [...new Set(products.map((p) => p.type))];
+
   if (filters.length > 0) {
     products = products.filter((p) => filters.includes(p.type));
   }
 
-  // ORDEN
-  if (sort === "price_asc") {
-    products.sort((a, b) => a.discountPrice - b.discountPrice);
-  }
-  if (sort === "price_desc") {
-    products.sort((a, b) => b.discountPrice - a.discountPrice);
-  }
-  if (sort === "sold") {
-    products.sort((a, b) => b.unitsSold - a.unitsSold);
-  }
-  if (sort === "recent") {
-    products.sort((a, b) => b.id - a.id);
-  }
+  if (sort === "price_asc") products.sort((a, b) => a.discountPrice - b.discountPrice);
+  if (sort === "price_desc") products.sort((a, b) => b.discountPrice - a.discountPrice);
+  if (sort === "sold") products.sort((a, b) => b.unitsSold - a.unitsSold);
+  if (sort === "recent") products.sort((a, b) => b.id - a.id);
 
-  // SCROLL INFINITO
   useEffect(() => {
-    setTimeout(() => setLoading(false), 800);
-
+    const timer = setTimeout(() => setLoading(false), 800);
     const handleScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 200
-      ) {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
         setVisible((prev) => prev + 8);
       }
     };
-
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
-  return (
-    <div>
+  const bannerSrc = BANNER_BY_GENDER[gender.toLowerCase()] ?? BANNER_BY_GENDER.hombre;
 
-      {/* BANNER */}
-      <div className="max-w-7xl mx-auto px-4 pt-6">
-        <div className="w-full h-[300px] overflow-hidden rounded-lg">
-          <img
-            src="https://images.unsplash.com/photo-1520975661595-6453be3f7070"
-            className="w-full h-full object-cover"
-          />
+  return (
+    <div className={`w-full max-w-full overflow-x-hidden ${poppins.className}`}>
+
+      {/* HERO BANNER — full width, sin padding lateral */}
+      <div className="relative w-full h-[340px] md:h-[500px] overflow-hidden bg-gray-100">
+        <img
+          src={bannerSrc}
+          alt={`Colección ${gender}`}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
+
+        <div className="absolute bottom-0 left-0 px-8 md:px-14 pb-10 md:pb-14">
+          <p className="text-xs uppercase tracking-[0.3em] text-white/50 font-medium mb-3">
+            Colección 2026
+          </p>
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white leading-none">
+            {gender}
+          </h1>
+          <p className="text-sm text-white/60 font-light mt-3 max-w-xs">
+            Prendas diseñadas para destacar en cada momento del día.
+          </p>
         </div>
       </div>
 
-      {/* TOP BAR */}
-      <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between">
-        <button
-          onClick={() => setOpenFilters(true)}
-          className="flex items-center gap-2 text-sm hover:opacity-60"
-        >
-          ⚙️ Filtrar y ordenar
-        </button>
+      {/* FILTROS RÁPIDOS — pills horizontales */}
+      <div className="border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="flex items-center gap-2 py-4 overflow-x-auto scrollbar-hide">
+
+            {/* Todos */}
+            <button
+              onClick={() => setFilters([])}
+              className={`flex-shrink-0 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.12em] border transition-colors duration-200 ${
+                filters.length === 0
+                  ? "bg-black text-white border-black"
+                  : "border-gray-200 text-gray-600 hover:border-gray-900"
+              }`}
+            >
+              Todos
+            </button>
+
+            {allTypes.map((type) => (
+              <button
+                key={type}
+                onClick={() =>
+                  setFilters((prev) =>
+                    prev.includes(type)
+                      ? prev.filter((f) => f !== type)
+                      : [...prev, type]
+                  )
+                }
+                className={`flex-shrink-0 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.12em] border transition-colors duration-200 ${
+                  filters.includes(type)
+                    ? "bg-black text-white border-black"
+                    : "border-gray-200 text-gray-600 hover:border-gray-900"
+                }`}
+              >
+                {type}
+              </button>
+            ))}
+
+            {/* Separador */}
+            <div className="flex-shrink-0 w-px h-5 bg-gray-200 mx-1" />
+
+            {/* Ordenar + filtros avanzados */}
+            <button
+              onClick={() => setOpenFilters(true)}
+              className="flex-shrink-0 flex items-center gap-1.5 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.12em] border border-gray-200 text-gray-600 hover:border-gray-900 transition-colors duration-200"
+            >
+              <SlidersHorizontal size={12} />
+              Ordenar
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      {/* META BAR */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
+        <p className="text-xs text-gray-400 uppercase tracking-[0.15em]">
+          {loading ? "—" : `${products.length} productos`}
+        </p>
+
+        {/* Filtros activos */}
+        {filters.length > 0 && (
+          <div className="flex items-center gap-2">
+            {filters.map((f) => (
+              <span
+                key={f}
+                className="flex items-center gap-1 text-[10px] uppercase tracking-[0.1em] font-medium bg-gray-100 text-gray-700 px-2.5 py-1"
+              >
+                {f}
+                <button
+                  onClick={() => setFilters((prev) => prev.filter((x) => x !== f))}
+                  className="ml-0.5 text-gray-400 hover:text-gray-900 transition-colors"
+                >
+                  <X size={10} />
+                </button>
+              </span>
+            ))}
+            <button
+              onClick={() => setFilters([])}
+              className="text-[10px] uppercase tracking-[0.1em] text-gray-400 underline underline-offset-2 hover:text-gray-900 transition-colors"
+            >
+              Limpiar
+            </button>
+          </div>
+        )}
       </div>
 
       {/* GRID */}
-      <div className="max-w-7xl mx-auto px-4 pb-10">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
+      <div className="max-w-7xl mx-auto px-4 md:px-8 pb-20">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10">
           {loading
-            ? Array.from({ length: 8 }).map((_, i) => (
-                <ProductSkeleton key={i} />
+            ? Array.from({ length: 8 }).map((_, i) => <ProductSkeleton key={i} />)
+            : products.slice(0, visible).map((product) => (
+                <ProductCard key={product.id} product={product} />
               ))
-            : products.slice(0, visible).map((product) => {
-                const hasDiscount =
-                  product.discountPrice < product.originalPrice;
-
-                const discount = hasDiscount
-                  ? Math.round(
-                      ((product.originalPrice - product.discountPrice) /
-                        product.originalPrice) *
-                        100
-                    )
-                  : 0;
-
-                return (
-                  <Link
-                    href={`/product/${product.slug}`}
-                    key={product.id}
-                    className="group"
-                  >
-                    {/* IMAGE */}
-                    <div className="relative w-full aspect-[1080/1616] bg-gray-100 overflow-hidden">
-
-                      {/* Imagen 1 */}
-                      <img
-                        src={product.images[0]}
-                        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
-                      />
-
-                      {/* Imagen 2 */}
-                      <img
-                        src={product.images[1] || product.images[0]}
-                        className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      />
-
-                      {/* BADGE */}
-                      {hasDiscount && (
-                        <div className="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1">
-                          -{discount}%
-                        </div>
-                      )}
-                    </div>
-
-                    {/* INFO */}
-                    <div className="mt-3 space-y-1">
-                      <h2 className="text-sm font-medium">
-                        {product.name}
-                      </h2>
-
-                      <div className="flex gap-2 text-sm">
-                        <span className="font-semibold">
-                          ${product.discountPrice.toLocaleString()}
-                        </span>
-
-                        {hasDiscount && (
-                          <span className="text-gray-400 line-through">
-                            ${product.originalPrice.toLocaleString()}
-                          </span>
-                        )}
-                      </div>
-
-                      <button className="btn-primary w-full mt-2 text-sm">
-                        Agregar al carrito
-                      </button>
-                    </div>
-                  </Link>
-                );
-              })}
+          }
         </div>
 
         {/* EMPTY */}
         {!loading && products.length === 0 && (
-          <div className="text-center py-20 text-gray-500">
-            No hay coincidencias con los filtros.
+          <div className="flex flex-col items-center justify-center py-32 text-center">
+            <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-4">
+              <SlidersHorizontal size={18} className="text-gray-300" />
+            </div>
+            <p className="text-sm font-medium text-gray-900 mb-1">
+              Sin resultados
+            </p>
+            <p className="text-xs text-gray-400 mb-6">
+              No hay productos que coincidan con los filtros seleccionados.
+            </p>
+            <button
+              onClick={() => setFilters([])}
+              className="text-xs font-semibold uppercase tracking-[0.15em] underline underline-offset-2 hover:text-gray-500 transition-colors"
+            >
+              Limpiar filtros
+            </button>
           </div>
         )}
 
         {/* LOADER */}
         {visible < products.length && !loading && (
-          <div className="text-center py-6 text-gray-400">
-            Cargando más productos...
+          <div className="flex items-center justify-center gap-3 pt-12">
+            <div className="h-px w-12 bg-gray-200" />
+            <p className="text-xs text-gray-400 uppercase tracking-[0.15em]">
+              Cargando más
+            </p>
+            <div className="h-px w-12 bg-gray-200" />
           </div>
         )}
       </div>
 
-      {/* DRAWER */}
       <FilterDrawer
         open={openFilters}
         onClose={() => setOpenFilters(false)}

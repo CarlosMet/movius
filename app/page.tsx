@@ -19,10 +19,7 @@ export default function Home() {
       <HeroSlider />
       <PremiumCarousel />
       <PersonalizadosInfo />
-      <Personalizados />
-      <button className="btn-primary" > Agregar al carrito </button>
-      <button className="btn">boton normal</button>     
-      <button className="btn-outline">boton contorno</button>   
+      <Personalizados />        
     </div>
   );
 }

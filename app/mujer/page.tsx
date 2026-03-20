@@ -1,5 +1,7 @@
+import HMContent from "../components/hombreymujer/HMContent";
+
 export default function page() {
   return (
-    <div>page</div>
+    <HMContent gender="mujer" />
   )
 }

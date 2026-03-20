@@ -17,11 +17,29 @@
       "https://i.postimg.cc/d1vqCLR0/DSC07951.jpg",
       "https://i.postimg.cc/Ssqy9JLQ/DSC07952.jpg",
       "https://i.postimg.cc/gcsvnhyJ/DSC07957.jpg"
-    ]
+    ],
+    "variants": [
+        {
+          "size": "30",
+          "stock": 7
+        },
+        {
+          "size": "32",
+          "stock": 6
+        },
+        {
+          "size": "34",
+          "stock": 4
+        },
+        {
+          "size": "36",
+          "stock": 2
+        }
+      ]
   },
   {
     "id": 2,
-    "filtro":"hombre",
+    "filtro":"Mujer",
     "name": "Chaqueta Mujer",
     "slug": "chaqueta-mujer",
     "price": 80000,
@@ -37,7 +55,25 @@
       "https://i.postimg.cc/rmBFpQnX/DSC07939.jpg",
       "https://i.postimg.cc/Kz6vYJ9W/DSC07944.jpg",
       "https://picsum.photos/600/700?8"
-    ]
+    ],
+    "variants": [
+        {
+          "size": "30",
+          "stock": 7
+        },
+        {
+          "size": "32",
+          "stock": 6
+        },
+        {
+          "size": "34",
+          "stock": 4
+        },
+        {
+          "size": "36",
+          "stock": 2
+        }
+      ]
   },
   {
     "id": 3,
@@ -48,7 +84,7 @@
     "originalPrice": 100000,
     "discountPrice": 100000,
     "unitsSold": 80,
-    "type": "Camiseta",
+    "type": "Pantaloneta",
     "gender": "Hombre",
     "category": "Casual",
     "description": "Camiseta negra cómoda y transpirable para uso diario.",
@@ -57,6 +93,24 @@
       "https://i.postimg.cc/s2Th14yF/Gemini_Generated_Image_g44gyig44gyig44g.png",
       "https://i.postimg.cc/pdsFyJvg/Gemini-Generated-Image-mzrgugmzrgugmzrg.png",
       "https://picsum.photos/600/700?8"
-    ]
+    ],
+    "variants": [
+        {
+          "size": "30",
+          "stock": 7
+        },
+        {
+          "size": "32",
+          "stock": 6
+        },
+        {
+          "size": "34",
+          "stock": 4
+        },
+        {
+          "size": "36",
+          "stock": 2
+        }
+      ]
   }
 ]
