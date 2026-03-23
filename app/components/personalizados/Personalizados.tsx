@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Poppins } from "next/font/google";
+import { WHATSAPP_CUSTOM_MESSAGE } from "@/lib/constantes";
 
 
 const poppinsFont = Poppins({
@@ -9,6 +10,8 @@ const poppinsFont = Poppins({
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-poppins",
 });
+
+const WHATSAPP_URL = `https://wa.me/573006161316?text=${encodeURIComponent(WHATSAPP_CUSTOM_MESSAGE)}`;
 
 export default function Personalizados() {
   return (
@@ -52,7 +55,7 @@ export default function Personalizados() {
 
         {/* CTA — squared fill-up button */}
         <Link
-          href="/productos"
+          href={WHATSAPP_URL}
           className="relative inline-flex items-center gap-2 border border-white text-white text-xs md:text-sm font-semibold tracking-[0.15em] uppercase px-8 py-3 md:px-10 md:py-4 overflow-hidden group transition-colors duration-300"
         >
           <span className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
