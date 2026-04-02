@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { saveCart, type CartItem } from "@/lib/cart";
 import { getProducts } from "@/lib/product";
@@ -9,12 +9,17 @@ const SHIPPING_COST = 12000;
 const FREE_SHIPPING_THRESHOLD = 300000;
 
 const formatPrice = (n: number) =>
-  new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
+  new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    maximumFractionDigits: 0,
+  }).format(n);
 
-const getMaxStock = (productId: number, size: string): number => {
-  const product = getProducts().find((p) => p.id === productId);
-  return product?.variants?.find((v) => v.size === size)?.stock ?? Infinity;
-};
+interface Product {
+  id: number;
+  images?: string[];
+  variants?: { size: string; stock: number }[];
+}
 
 interface Props {
   items: CartItem[];
@@ -22,16 +27,52 @@ interface Props {
   onSubmit: (e: React.MouseEvent) => void;
 }
 
-export default function CheckoutSummary({ items, onItemsChange, onSubmit }: Props) {
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+export default function CheckoutSummary({
+  items,
+  onItemsChange,
+  onSubmit,
+}: Props) {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  // 🔹 cargar productos (API)
+  useEffect(() => {
+    async function loadProducts() {
+      const data = await getProducts();
+      setProducts(data);
+    }
+    loadProducts();
+  }, []);
+
+  // 🔹 obtener stock correctamente
+  const getMaxStock = (productId: number, size: string): number => {
+    const product = products.find((p) => p.id === productId);
+    return product?.variants?.find((v) => v.size === size)?.stock ?? Infinity;
+  };
+
+  // 🔹 fallback imagen
+  const getProductImage = (productId: number, fallback?: string) => {
+    const product = products.find((p) => p.id === productId);
+    return product?.images?.[0] || fallback || "/placeholder.jpg";
+  };
+
+  const subtotal = items.reduce(
+    (acc, item) => acc + (item.price ?? 0) * (item.quantity ?? 0),
+    0
+  );
+
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
   const total = subtotal + shipping;
 
   const updateQuantity = (productId: number, size: string, delta: number) => {
     if (delta > 0) {
-      const current = items.find((i) => i.productId === productId && i.size === size);
-      if (current && current.quantity >= getMaxStock(productId, size)) return;
+      const current = items.find(
+        (i) => i.productId === productId && i.size === size
+      );
+      const maxStock = getMaxStock(productId, size);
+
+      if (current && current.quantity >= maxStock) return;
     }
+
     const updated = items
       .map((item) =>
         item.productId === productId && item.size === size
@@ -39,6 +80,7 @@ export default function CheckoutSummary({ items, onItemsChange, onSubmit }: Prop
           : item
       )
       .filter((item) => item.quantity > 0);
+
     onItemsChange(updated);
     saveCart(updated);
   };
@@ -63,10 +105,16 @@ export default function CheckoutSummary({ items, onItemsChange, onSubmit }: Prop
           const maxStock = getMaxStock(item.productId, item.size);
           const atMax = item.quantity >= maxStock;
 
+          const imageSrc = getProductImage(item.productId, item.image);
+
           return (
             <div key={`${item.productId}-${item.size}`} className="flex gap-3">
               <div className="w-16 h-20 flex-shrink-0 bg-gray-100 overflow-hidden">
-                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                <img
+                  src={imageSrc}
+                  alt={item.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
 
               <div className="flex-1 flex flex-col justify-between py-0.5">
@@ -79,9 +127,12 @@ export default function CheckoutSummary({ items, onItemsChange, onSubmit }: Prop
                       Talla: {item.size}
                     </p>
                     {atMax && (
-                      <p className="text-[10px] text-red-400 mt-0.5">Stock máximo</p>
+                      <p className="text-[10px] text-red-400 mt-0.5">
+                        Stock máximo
+                      </p>
                     )}
                   </div>
+
                   <button
                     onClick={() => removeItem(item.productId, item.size)}
                     className="text-gray-300 hover:text-red-400 transition-colors flex-shrink-0"
@@ -93,22 +144,29 @@ export default function CheckoutSummary({ items, onItemsChange, onSubmit }: Prop
                 <div className="flex items-center justify-between mt-2">
                   <div className="flex items-center gap-2 border border-gray-200 px-2 py-1">
                     <button
-                      onClick={() => updateQuantity(item.productId, item.size, -1)}
-                      className="text-gray-400 hover:text-gray-900 transition-colors"
+                      onClick={() =>
+                        updateQuantity(item.productId, item.size, -1)
+                      }
+                      className="text-gray-400 hover:text-gray-900"
                     >
                       <Minus size={11} />
                     </button>
-                    <span className="text-xs font-medium w-4 text-center tabular-nums">
+
+                    <span className="text-xs font-medium w-4 text-center">
                       {item.quantity}
                     </span>
+
                     <button
-                      onClick={() => updateQuantity(item.productId, item.size, 1)}
+                      onClick={() =>
+                        updateQuantity(item.productId, item.size, 1)
+                      }
                       disabled={atMax}
-                      className="text-gray-400 hover:text-gray-900 transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
+                      className="text-gray-400 hover:text-gray-900 disabled:opacity-25"
                     >
                       <Plus size={11} />
                     </button>
                   </div>
+
                   <p className="text-sm font-semibold text-gray-900">
                     {formatPrice(item.price * item.quantity)}
                   </p>
@@ -121,17 +179,23 @@ export default function CheckoutSummary({ items, onItemsChange, onSubmit }: Prop
 
       {/* TOTALES */}
       <div className="border-t border-gray-100 pt-4 space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex justify-between">
           <span className="text-xs text-gray-400">Subtotal</span>
-          <span className="text-sm text-gray-900">{formatPrice(subtotal)}</span>
+          <span className="text-sm text-gray-900">
+            {formatPrice(subtotal)}
+          </span>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex justify-between">
           <span className="text-xs text-gray-400">Envío</span>
           {shipping === 0 ? (
-            <span className="text-sm font-medium text-green-600">Gratis</span>
+            <span className="text-sm font-medium text-green-600">
+              Gratis
+            </span>
           ) : (
-            <span className="text-sm text-gray-900">{formatPrice(shipping)}</span>
+            <span className="text-sm text-gray-900">
+              {formatPrice(shipping)}
+            </span>
           )}
         </div>
 
@@ -145,26 +209,25 @@ export default function CheckoutSummary({ items, onItemsChange, onSubmit }: Prop
           </p>
         )}
 
-        <div className="flex items-center justify-between border-t border-gray-100 pt-3">
-          <span className="text-xs uppercase tracking-[0.15em] text-gray-400 font-medium">
+        <div className="flex justify-between border-t pt-3">
+          <span className="text-xs uppercase tracking-[0.15em] text-gray-400">
             Total
           </span>
-          <span className="text-lg font-bold text-gray-900">{formatPrice(total)}</span>
+          <span className="text-lg font-bold text-gray-900">
+            {formatPrice(total)}
+          </span>
         </div>
       </div>
 
       {/* BOTÓN */}
       <button
         onClick={onSubmit}
-        className="relative w-full flex items-center justify-center border border-black text-black text-xs font-semibold tracking-[0.15em] uppercase py-4 overflow-hidden group transition-colors duration-300 mt-6"
+        className="w-full border border-black text-black text-xs font-semibold uppercase py-4 mt-6 hover:bg-black hover:text-white transition"
       >
-        <span className="absolute inset-0 bg-black translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-        <span className="relative z-10 group-hover:text-white transition-colors duration-300">
-          Confirmar pedido
-        </span>
+        Confirmar pedido
       </button>
 
-      <p className="text-[10px] text-gray-400 text-center mt-3 leading-relaxed">
+      <p className="text-[10px] text-gray-400 text-center mt-3">
         Pagarás en efectivo al recibir tu pedido.
       </p>
     </div>

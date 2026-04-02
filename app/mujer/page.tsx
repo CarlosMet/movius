@@ -1,7 +1,11 @@
+
+import { Suspense } from "react";
 import HMContent from "../components/hombreymujer/HMContent";
 
-export default function page() {
+export default function MujerPage() {
   return (
-    <HMContent gender="mujer" />
-  )
+    <Suspense>
+      <HMContent gender="Mujer" />
+    </Suspense>
+  );
 }

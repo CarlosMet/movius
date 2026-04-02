@@ -1,10 +1,11 @@
+import { WHATSAPP_DEFAULT_MESSAGE, WHATSAPP_NUMBER } from "@/lib/constantes";
 import Link from "next/link";
 
-const WHATSAPP_NUMBER = "573001234567";
-const WHATSAPP_MESSAGE = "Hola, estoy interesado en sus productos y quisiera más información.";
+
+
 
 export default function WhatsAppButton() {
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_DEFAULT_MESSAGE)}`;
 
   return (
     <Link
@@ -12,7 +13,7 @@ export default function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Contactar por WhatsApp"
-      className="fixed bottom-6 right-6 z-50 group"
+      className="fixed bottom-24 lg:bottom-36 xl:bottom-44 right-6 z-50 group"
     >
       {/* PING — onda expansiva */}
       <span className="absolute inset-0 rounded-full bg-[#25D366] opacity-75 animate-ping-slow" />

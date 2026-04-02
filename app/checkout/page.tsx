@@ -3,23 +3,52 @@
 import { useState, useEffect } from "react";
 import { Poppins } from "next/font/google";
 import { ShoppingBag } from "lucide-react";
-import { getCart, saveCart, type CartItem } from "@/lib/cart";
-import CheckoutForm, { type FormData, EMPTY_FORM } from "./CheckoutForm";
-import CheckoutSuccess from "./CheckoutSuccess";
+import { getCart, saveCart, type CartItem } from "../../lib/cart";
+import { WHATSAPP_NUMBER, SHIPPING_COST, FREE_SHIPPING_THRESHOLD } from "../../lib/constantes";
+import CheckoutForm, { type FormData, type PaymentMethod, EMPTY_FORM } from "./CheckoutForm";
 import CheckoutSummary from "./CheckoutSummary";
-
+import CheckoutSuccess from "./CheckoutSuccess";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
+
+const formatPrice = (n: number) =>
+  new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
+
+function buildWhatsAppUrl(items: CartItem[], total: number): string {
+  const itemLines = items
+    .map((item) =>
+      `• ${item.name} (Talla: ${item.size}) x${item.quantity} — ${formatPrice(item.price * item.quantity)}`
+    )
+    .join("\n");
+
+  const message = [
+    "Hola, quiero realizar el siguiente pedido 🛍️",
+    "",
+    "*Productos:*",
+    itemLines,
+    "",
+    `*Total: ${formatPrice(total)}*`,
+    "",
+    "¿Podrían confirmar disponibilidad y coordinar la entrega? 🙏",
+  ].join("\n");
+
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
 
 export default function CheckoutPage() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [form, setForm] = useState<FormData>(EMPTY_FORM);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod");
 
   useEffect(() => {
     setItems(getCart());
   }, []);
+
+  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+  const total = subtotal + shipping;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -59,12 +88,8 @@ export default function CheckoutPage() {
           <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center mx-auto mb-4">
             <ShoppingBag size={24} className="text-gray-300" />
           </div>
-          <p className="text-sm font-medium text-gray-900 mb-1">
-            Tu carrito está vacío
-          </p>
-          <p className="text-xs text-gray-400 mb-6">
-            Agrega productos antes de continuar
-          </p>
+          <p className="text-sm font-medium text-gray-900 mb-1">Tu carrito está vacío</p>
+          <p className="text-xs text-gray-400 mb-6">Agrega productos antes de continuar</p>
           <a
             href="/"
             className="text-xs font-semibold uppercase tracking-[0.15em] underline underline-offset-2 hover:text-gray-500 transition-colors"
@@ -90,8 +115,24 @@ export default function CheckoutPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8 items-start">
-          <CheckoutForm form={form} errors={errors} onChange={handleChange} />
-          <CheckoutSummary items={items} onItemsChange={setItems} onSubmit={handleSubmit} />
+          <CheckoutForm
+            form={form}
+            errors={errors}
+            onChange={handleChange}
+            paymentMethod={paymentMethod}
+            onPaymentMethodChange={setPaymentMethod}
+            whatsappUrl={
+              paymentMethod === "whatsapp"
+                ? buildWhatsAppUrl(items, total)
+                : undefined
+            }
+          />
+          <CheckoutSummary
+            items={items}
+            onItemsChange={setItems}
+            onSubmit={handleSubmit}
+            paymentMethod={paymentMethod}
+          />
         </div>
 
       </div>

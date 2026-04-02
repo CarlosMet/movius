@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { getProducts } from "@/lib/product";
 import ProductCard from "./ProductCard";
 import ProductSkeleton from "./ProductSkeleton";
@@ -8,57 +9,99 @@ import FilterDrawer from "./FilterDrawer";
 import { SlidersHorizontal, X } from "lucide-react";
 import { Poppins } from "next/font/google";
 
-const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
 
 const BANNER_BY_GENDER: Record<string, string> = {
-  hombre: "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=1400&auto=format&fit=crop",
-  mujer: "https://images.unsplash.com/photo-1520975661595-6453be3f7070?w=1400&auto=format&fit=crop",
+  hombre:
+    "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=1400&auto=format&fit=crop",
+  mujer:
+    "https://images.unsplash.com/photo-1520975661595-6453be3f7070?w=1400&auto=format&fit=crop",
 };
 
 export default function HMContent({ gender }: { gender: string }) {
+  const searchParams = useSearchParams();
+
+  const [products, setProducts] = useState<any[]>([]);
   const [filters, setFilters] = useState<string[]>([]);
   const [sort, setSort] = useState<string>("");
   const [openFilters, setOpenFilters] = useState(false);
   const [visible, setVisible] = useState(8);
   const [loading, setLoading] = useState(true);
 
-  let products = getProducts().filter(
-    (p) =>
-      p.gender.toLowerCase() === gender.toLowerCase() &&
-      p.filtro !== "uniformes"
-  );
-
-  const allTypes = [...new Set(products.map((p) => p.type))];
-
-  if (filters.length > 0) {
-    products = products.filter((p) => filters.includes(p.type));
-  }
-
-  if (sort === "price_asc") products.sort((a, b) => a.discountPrice - b.discountPrice);
-  if (sort === "price_desc") products.sort((a, b) => b.discountPrice - a.discountPrice);
-  if (sort === "sold") products.sort((a, b) => b.unitsSold - a.unitsSold);
-  if (sort === "recent") products.sort((a, b) => b.id - a.id);
-
+  // 🔹 Cargar productos desde API
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 800);
+    async function loadProducts() {
+      try {
+        const data = await getProducts();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error cargando productos:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadProducts();
+  }, []);
+
+  // 🔹 Leer query param ?tipo=
+  useEffect(() => {
+    const tipo = searchParams.get("tipo");
+    if (tipo) setFilters([tipo]);
+  }, [searchParams]);
+
+  // 🔹 Productos filtrados + ordenados (SIN mutar estado)
+  const filteredProducts = products
+    .filter(
+      (p) =>
+        p.gender?.toLowerCase() === gender.toLowerCase() &&
+        p.filtro !== "uniformes"
+    )
+    .filter((p) =>
+      filters.length > 0 ? filters.includes(p.type) : true
+    )
+    .sort((a, b) => {
+      if (sort === "price_asc") return a.discountPrice - b.discountPrice;
+      if (sort === "price_desc") return b.discountPrice - a.discountPrice;
+      if (sort === "sold") return b.unitsSold - a.unitsSold;
+      if (sort === "recent") return b.id - a.id;
+      return 0;
+    });
+
+  const allTypes = [
+    ...new Set(
+      products
+        .filter((p) => p.gender?.toLowerCase() === gender.toLowerCase())
+        .map((p) => p.type)
+    ),
+  ];
+
+  // 🔹 Infinite scroll
+  useEffect(() => {
     const handleScroll = () => {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 200
+      ) {
         setVisible((prev) => prev + 8);
       }
     };
+
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const bannerSrc = BANNER_BY_GENDER[gender.toLowerCase()] ?? BANNER_BY_GENDER.hombre;
+  const bannerSrc =
+    BANNER_BY_GENDER[gender.toLowerCase()] ??
+    BANNER_BY_GENDER.hombre;
 
   return (
     <div className={`w-full max-w-full overflow-x-hidden ${poppins.className}`}>
 
-      {/* HERO BANNER — full width, sin padding lateral */}
+      {/* HERO */}
       <div className="relative w-full h-[340px] md:h-[500px] overflow-hidden bg-gray-100">
         <img
           src={bannerSrc}
@@ -82,18 +125,17 @@ export default function HMContent({ gender }: { gender: string }) {
         </div>
       </div>
 
-      {/* FILTROS RÁPIDOS — pills horizontales */}
+      {/* FILTROS */}
       <div className="border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="flex items-center gap-2 py-4 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-2 py-4 overflow-x-auto">
 
-            {/* Todos */}
             <button
               onClick={() => setFilters([])}
-              className={`flex-shrink-0 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.12em] border transition-colors duration-200 ${
+              className={`px-4 py-1.5 text-xs border ${
                 filters.length === 0
-                  ? "bg-black text-white border-black"
-                  : "border-gray-200 text-gray-600 hover:border-gray-900"
+                  ? "bg-black text-white"
+                  : "border-gray-200 text-gray-600"
               }`}
             >
               Todos
@@ -109,106 +151,49 @@ export default function HMContent({ gender }: { gender: string }) {
                       : [...prev, type]
                   )
                 }
-                className={`flex-shrink-0 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.12em] border transition-colors duration-200 ${
+                className={`px-4 py-1.5 text-xs border ${
                   filters.includes(type)
-                    ? "bg-black text-white border-black"
-                    : "border-gray-200 text-gray-600 hover:border-gray-900"
+                    ? "bg-black text-white"
+                    : "border-gray-200 text-gray-600"
                 }`}
               >
                 {type}
               </button>
             ))}
 
-            {/* Separador */}
-            <div className="flex-shrink-0 w-px h-5 bg-gray-200 mx-1" />
-
-            {/* Ordenar + filtros avanzados */}
-            <button
-              onClick={() => setOpenFilters(true)}
-              className="flex-shrink-0 flex items-center gap-1.5 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.12em] border border-gray-200 text-gray-600 hover:border-gray-900 transition-colors duration-200"
-            >
-              <SlidersHorizontal size={12} />
-              Ordenar
+            <button onClick={() => setOpenFilters(true)}>
+              <SlidersHorizontal size={14} />
             </button>
 
           </div>
         </div>
       </div>
 
-      {/* META BAR */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
-        <p className="text-xs text-gray-400 uppercase tracking-[0.15em]">
-          {loading ? "—" : `${products.length} productos`}
+      {/* META */}
+      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between">
+        <p className="text-xs text-gray-400">
+          {loading ? "—" : `${filteredProducts.length} productos`}
         </p>
-
-        {/* Filtros activos */}
-        {filters.length > 0 && (
-          <div className="flex items-center gap-2">
-            {filters.map((f) => (
-              <span
-                key={f}
-                className="flex items-center gap-1 text-[10px] uppercase tracking-[0.1em] font-medium bg-gray-100 text-gray-700 px-2.5 py-1"
-              >
-                {f}
-                <button
-                  onClick={() => setFilters((prev) => prev.filter((x) => x !== f))}
-                  className="ml-0.5 text-gray-400 hover:text-gray-900 transition-colors"
-                >
-                  <X size={10} />
-                </button>
-              </span>
-            ))}
-            <button
-              onClick={() => setFilters([])}
-              className="text-[10px] uppercase tracking-[0.1em] text-gray-400 underline underline-offset-2 hover:text-gray-900 transition-colors"
-            >
-              Limpiar
-            </button>
-          </div>
-        )}
       </div>
 
       {/* GRID */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 pb-20">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10">
+      <div className="max-w-7xl mx-auto px-4 pb-20">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
           {loading
-            ? Array.from({ length: 8 }).map((_, i) => <ProductSkeleton key={i} />)
-            : products.slice(0, visible).map((product) => (
-                <ProductCard key={product.id} product={product} />
+            ? Array.from({ length: 8 }).map((_, i) => (
+                <ProductSkeleton key={i} />
               ))
-          }
+            : filteredProducts.slice(0, visible).map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+
         </div>
 
-        {/* EMPTY */}
-        {!loading && products.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-32 text-center">
-            <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-4">
-              <SlidersHorizontal size={18} className="text-gray-300" />
-            </div>
-            <p className="text-sm font-medium text-gray-900 mb-1">
-              Sin resultados
-            </p>
-            <p className="text-xs text-gray-400 mb-6">
-              No hay productos que coincidan con los filtros seleccionados.
-            </p>
-            <button
-              onClick={() => setFilters([])}
-              className="text-xs font-semibold uppercase tracking-[0.15em] underline underline-offset-2 hover:text-gray-500 transition-colors"
-            >
-              Limpiar filtros
-            </button>
-          </div>
-        )}
-
-        {/* LOADER */}
-        {visible < products.length && !loading && (
-          <div className="flex items-center justify-center gap-3 pt-12">
-            <div className="h-px w-12 bg-gray-200" />
-            <p className="text-xs text-gray-400 uppercase tracking-[0.15em]">
-              Cargando más
-            </p>
-            <div className="h-px w-12 bg-gray-200" />
-          </div>
+        {!loading && filteredProducts.length === 0 && (
+          <p className="text-center py-20 text-gray-400">
+            Sin resultados
+          </p>
         )}
       </div>
 

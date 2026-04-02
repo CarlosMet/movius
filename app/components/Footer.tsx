@@ -101,50 +101,12 @@ export default function Footer() {
           </div>
 
           {/* EMPRESA */}
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 font-medium mb-5">
-              Empresa
-            </p>
-            <ul className="space-y-3">
-              {links.empresa.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-white/60 hover:text-white transition-colors duration-200"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          
 
         </div>
 
         {/* NEWSLETTER */}
-        <div className="mt-14 pt-10 border-t border-white/10">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div>
-              <p className="text-sm font-medium text-white mb-1">
-                Suscríbete y recibe un 10% de descuento
-              </p>
-              <p className="text-xs text-white/40 font-light">
-                Novedades, lanzamientos y ofertas exclusivas.
-              </p>
-            </div>
-
-            <div className="flex w-full md:w-auto">
-              <input
-                type="email"
-                placeholder="tu@correo.com"
-                className="flex-1 md:w-64 bg-white/5 border border-white/15 text-white text-xs placeholder:text-white/25 px-4 py-3 outline-none focus:border-white/40 transition-colors duration-200"
-              />
-              <button className="bg-white text-black text-xs font-semibold uppercase tracking-[0.15em] px-5 py-3 hover:bg-white/90 transition-colors duration-200 whitespace-nowrap">
-                Suscribirse
-              </button>
-            </div>
-          </div>
-        </div>
+        
       </div>
 
       {/* BOTTOM BAR */}

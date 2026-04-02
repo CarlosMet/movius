@@ -188,6 +188,82 @@
           "stock": 2
         }
       ]
+  },
+  {
+    "id": 7,
+    "filtro":"Hombre",
+    "name": "Buso Blanco Hombre",
+    "slug": "buso-blanco-hombre",
+    "price": 80000,
+    "originalPrice": 100000,
+    "discountPrice": 85000,
+    "unitsSold": 80,
+    "type": "Buso",
+    "gender": "Hombre",
+    "category": "General",
+    "description": "Buso blanco en tela de algodón 100% con diseño moderno y cómodo para uso diario.",
+    "images": [
+      "https://i.postimg.cc/X7nT7wPn/DSC07970.jpg",
+      "https://i.postimg.cc/9FcvFGk2/DSC07975.jpg",
+      "https://i.postimg.cc/65BD5dPW/DSC07972.jpg"
+      
+    ],
+    "variants": [
+        {
+          "size": "30",
+          "stock": 7
+        },
+        {
+          "size": "32",
+          "stock": 6
+        },
+        {
+          "size": "34",
+          "stock": 4
+        },
+        {
+          "size": "36",
+          "stock": 2
+        }
+      ]
+  },
+  {
+    "id": 8,
+    "filtro":"Hombre",
+    "name": "Camiseta Blanca Básica Hombre",
+    "slug": "camiseta-blanca-basica-hombre",
+    "price": 80000,
+    "originalPrice": 100000,
+    "discountPrice": 85000,
+    "unitsSold": 80,
+    "type": "Camiseta",
+    "gender": "Hombre",
+    "category": "General",
+    "description": "Camiseta blanca básica en tela de algodón 100% con diseño moderno y cómodo para uso diario.",
+    "images": [
+      "https://i.postimg.cc/kMW2dmrm/DSC07980.jpg",
+      "https://i.postimg.cc/CMbRVgy0/DSC07985.jpg"    
+      
+    ],
+    "variants": [
+        {
+          "size": "30",
+          "stock": 7
+        },
+        {
+          "size": "32",
+          "stock": 6
+        },
+        {
+          "size": "34",
+          "stock": 4
+        },
+        {
+          "size": "36",
+          "stock": 2
+        }
+      ]
   }
+  
   
 ]

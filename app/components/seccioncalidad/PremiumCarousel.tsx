@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useAnimationControls } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 import { getProducts } from "@/lib/product";
 import Link from "next/link";
 import { Poppins } from "next/font/google";
@@ -10,16 +10,26 @@ const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600"] });
 
 export default function PremiumCarousel() {
   const controls = useAnimationControls();
+  const [products, setProducts] = useState<any[]>([]);
 
-  const products = getProducts()
-    .sort((a, b) => b.unitsSold - a.unitsSold)
-    .slice(0, 12);
+  useEffect(() => {
+    async function loadProducts() {
+      const data = await getProducts();
+
+      const sorted = data
+        .sort((a: any, b: any) => b.unitsSold - a.unitsSold)
+        .slice(0, 12);
+
+      setProducts(sorted);
+    }
+
+    loadProducts();
+  }, []);
 
   const loopProducts = [...products, ...products];
 
   return (
     <section className="py-24 bg-white overflow-hidden">
-
       {/* HEADER */}
       <div className="max-w-7xl mx-auto px-6 mb-14">
         <p className="text-xs uppercase tracking-[0.2em] text-gray-400 font-medium mb-4">
@@ -41,8 +51,6 @@ export default function PremiumCarousel() {
 
       {/* CAROUSEL */}
       <div className="relative">
-
-        {/* Edge fades */}
         <div className="pointer-events-none absolute left-0 top-0 h-full w-24 bg-gradient-to-r from-white to-transparent z-10" />
         <div className="pointer-events-none absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-white to-transparent z-10" />
 
@@ -72,19 +80,15 @@ export default function PremiumCarousel() {
                 key={`${product.id}-${i}`}
                 className="group block min-w-[260px] md:min-w-[360px] flex-shrink-0"
               >
-                {/* Image */}
                 <div className="relative w-full h-[420px] md:h-[520px] overflow-hidden bg-gray-100 rounded-sm">
                   <img
-                    src={product.images[0]}
+                    src={product.images?.[0]}
                     alt={product.name}
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
-
-                  {/* Subtle dark overlay on hover */}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
                 </div>
 
-                {/* Product info */}
                 <div className="mt-3 px-1 flex items-start justify-between gap-2">
                   <div>
                     <p className="text-sm font-medium text-gray-900 leading-snug">
