@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Poppins } from "next/font/google";
 import AddToCartButton from "@/app/components/products/AddToCartButton";
 import ProductGallery from "@/app/components/products/ProductGallery";
+import RelatedProducts from "@/app/components/products/RelatedProducts";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -85,6 +86,8 @@ export default async function ProductPage({ params }: Props) {
 
         </div>
       </div>
+
+      <RelatedProducts currentSlug={slug} type={product.type} />
     </div>
   );
 }
